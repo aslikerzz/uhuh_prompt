@@ -6,6 +6,9 @@ from colorama import Fore, Style, init
 
 init()
 
+# var ville pour n -c
+SITE = {}
+
 def clear():
     os.system("cls" if os.name == 'nt' else "clear")
 
@@ -24,6 +27,7 @@ def help():
                       -off : disable network tool
                       -a : add the address to scan/work on (read man on -h)
                       -nw : shows all wlans profiles
+                      -c : enable connection with a distant web server (using ftp)
                       
                 uhuh : as a prefix (read man on -u)
                 
@@ -35,6 +39,9 @@ def help():
 def nw():
     print(Fore.LIGHTCYAN_EX)
     print(os.system('netsh wlan show profiles'))
+
+def connect():
+    print(os.system('ftp' + SITE))
 
 
 
@@ -66,4 +73,8 @@ while True:
         clear()
     elif user_input == 'n -nw':
         nw()
-        
+
+# création de commandes pour args ftp
+
+    elif user_input == 'n -c' + SITE:
+        connect()
