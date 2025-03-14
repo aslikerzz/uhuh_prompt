@@ -6,8 +6,6 @@ from colorama import Fore, Style, init
 
 init()
 
-# var ville pour n -c
-SITE = {}
 
 def clear():
     os.system("cls" if os.name == 'nt' else "clear")
@@ -40,11 +38,30 @@ def nw():
     print(Fore.LIGHTCYAN_EX)
     print(os.system('netsh wlan show profiles'))
 
-def connect():
-    print(os.system('ftp' + SITE))
 
+def connect(address):
+    try:
+        process = subprocess.Popen(['ftp', address], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
 
+        print(f"{Fore.YELLOW}. . . listening to {address} . . .{Fore.RESET}")
+        
+        while True:
+            command = input(Fore.LIGHTGREEN_EX + "ftp> " + Fore.RESET)
+            
+            if command.lower() in ["bye"]:
+                process.stdin.write("bye\n")
+                process.stdin.flush()
+                break
 
+            process.stdin.write(command + "\n")
+            process.stdin.flush()
+            output = process.stdout.read(1024)
+            print(output)
+
+    except Exception as e:
+        print(Fore.YELLOW + f". . ." + Fore.WHITE + "fail to connet" + Fore.RED + "{e}" + Fore.YELLOW + ". . ." + Fore.RESET)
+        
+        
 
 while True:
     user_input = input(Fore.LIGHTGREEN_EX + "uhuh@user+: " + Fore.LIGHTBLUE_EX)
@@ -73,8 +90,12 @@ while True:
         clear()
     elif user_input == 'n -nw':
         nw()
-
-# création de commandes pour args ftp
-
-    elif user_input == 'n -c' + SITE:
-        connect()
+    elif user_input.startswith('n -c'):
+        parts = user_input.split()
+        if len(parts) == 3:
+            address = parts[2]
+            connect(address)
+        else:
+            print(Fore.LIGHTRED_EX + """
+                  [-] ERROR : """ + Fore.WHITE + """invalid syntax
+                  """ + Fore.RESET)
